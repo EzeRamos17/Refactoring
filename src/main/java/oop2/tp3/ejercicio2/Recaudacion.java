@@ -24,23 +24,32 @@ public class Recaudacion {
     public static final int INDICE_ROUND = 9;
     private List<String[]> csvData;
     private Map<String, String> options;
+    private Map<String, Integer> mapNombreIndice;
 
     public Recaudacion(FuenteDeDatos fuenteDeDatos) {
         this.csvData = fuenteDeDatos.toList();
+        this.mapNombreIndice = Map.of(COMPANY_NAME, INDICE_COMPANY_NAME,
+                CITY, INDICE_CITY,
+                STATE, INDICE_STATE,
+                ROUND, INDICE_ROUND);
     }
 
 
-    public List<Map<String, String>> where(Map<String, String> options)
+    public List<Map<String, String>> where(Map<String, String> filtrosDeBusqueda)
             throws IOException {
         //MEthod Object
-        this.options = options;
+        inicializarFiltros(filtrosDeBusqueda);
 
-        filtrarPor(COMPANY_NAME, INDICE_COMPANY_NAME);
-        filtrarPor(CITY, INDICE_CITY);
-        filtrarPor(STATE, INDICE_STATE);
-        filtrarPor(ROUND, INDICE_ROUND);
+        filtrarPor(COMPANY_NAME);
+        filtrarPor(CITY);
+        filtrarPor(STATE);
+        filtrarPor(ROUND);
 
         return crearResultado();
+    }
+
+    private void inicializarFiltros(Map<String, String> options) {
+        this.options = options;
     }
 
     private List<Map<String, String>> crearResultado() {
@@ -63,10 +72,12 @@ public class Recaudacion {
         return output;
     }
 
-    private void filtrarPor(String nombreColumna, int indiceColumna) {
+    private void filtrarPor(String nombreColumna) {
         if (options.containsKey(nombreColumna)) {
             List<String[]> results = csvData.stream()
-                    .filter(csvDatum -> csvDatum[indiceColumna].equals(options.get(nombreColumna)))
+                    .filter(csvDatum ->
+                            csvDatum[this.mapNombreIndice.get(nombreColumna)]
+                                    .equals(options.get(nombreColumna)))
                     .collect(Collectors.toList());
 
             csvData = results;
