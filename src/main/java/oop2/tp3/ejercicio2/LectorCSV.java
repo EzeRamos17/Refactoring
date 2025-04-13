@@ -16,7 +16,7 @@ public class LectorCSV implements FuenteDeDatos {
     @Override
     public List<String[]> toList() {
         try{
-        List<String[]> csvData = new ArrayList<String[]>();
+        List<String[]> csvData = new ArrayList<>();
         CSVReader reader = new CSVReader(new FileReader(this.csvPath));
         String[] row = null;
 
