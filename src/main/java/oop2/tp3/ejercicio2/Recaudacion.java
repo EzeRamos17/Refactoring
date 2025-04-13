@@ -23,11 +23,12 @@ public class Recaudacion {
     public static final int INDICE_STATE = 5;
     public static final int INDICE_ROUND = 9;
     private List<String[]> csvData;
-    private Map<String, String> options;
+    private Map<String, String> filtrosDeBusqueda;
     private Map<String, Integer> mapNombreIndice;
 
     public Recaudacion(FuenteDeDatos fuenteDeDatos) {
         this.csvData = fuenteDeDatos.toList();
+        this.filtrosDeBusqueda = new HashMap<String, String>();
         this.mapNombreIndice = Map.of(COMPANY_NAME, INDICE_COMPANY_NAME,
                 CITY, INDICE_CITY,
                 STATE, INDICE_STATE,
@@ -35,21 +36,29 @@ public class Recaudacion {
     }
 
 
-    public List<Map<String, String>> where(Map<String, String> filtrosDeBusqueda)
+    public List<Map<String, String>> ejecutarQuery()
             throws IOException {
         //MEthod Object
-        inicializarFiltros(filtrosDeBusqueda);
 
-        filtrarPor(COMPANY_NAME);
-        filtrarPor(CITY);
-        filtrarPor(STATE);
-        filtrarPor(ROUND);
+        for (String nombreColumna : this.filtrosDeBusqueda.keySet()){
+            List<String[]> results = csvData
+                    .stream().
+                    filter(csvDatum ->
+                            csvDatum[this.mapNombreIndice.get(nombreColumna)]
+                                    .equals(filtrosDeBusqueda.get(nombreColumna)))
+                    .collect(Collectors.toList());
+            csvData = results;
+        }
+//        filtrarPor(COMPANY_NAME);
+//        filtrarPor(CITY);
+//        filtrarPor(STATE);
+//        filtrarPor(ROUND);
 
         return crearResultado();
     }
 
     private void inicializarFiltros(Map<String, String> options) {
-        this.options = options;
+        this.filtrosDeBusqueda = options;
     }
 
     private List<Map<String, String>> crearResultado() {
@@ -72,15 +81,22 @@ public class Recaudacion {
         return output;
     }
 
-    private void filtrarPor(String nombreColumna) {
-        if (options.containsKey(nombreColumna)) {
-            List<String[]> results = csvData.stream()
-                    .filter(csvDatum ->
-                            csvDatum[this.mapNombreIndice.get(nombreColumna)]
-                                    .equals(options.get(nombreColumna)))
-                    .collect(Collectors.toList());
-
-            csvData = results;
-        }
+    public Recaudacion filtrarPor(String columnName, String valor) {
+        this.filtrosDeBusqueda.put(columnName, valor);
+        return this;
     }
+
+//    private void filtrarPor(String nombreColumna) {
+//        if (filtrosDeBusqueda.containsKey(nombreColumna)) {
+//            List<String[]> results = new ArrayList<>();
+//            for (String[] csvDatum : csvData) {
+//                if (csvDatum[this.mapNombreIndice.get(nombreColumna)]
+//                        .equals(filtrosDeBusqueda.get(nombreColumna))) {
+//                    results.add(csvDatum);
+//                }
+//            }
+//
+//            csvData = results;
+//        }
+//    }
 }

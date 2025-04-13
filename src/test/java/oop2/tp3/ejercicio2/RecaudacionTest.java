@@ -49,8 +49,16 @@ public class RecaudacionTest {
         Map<String, String> options = new HashMap<String, String>();
         options.put("round", "a");
         options.put("company_name", "Facebook");
-        var r1 = new Recaudacion(new LectorCSV("src/main/resources/data.csv"));
-        assertEquals(r1.where(options).size(), 1);
+
+        var recaudacion = new Recaudacion(new LectorCSV("src/main/resources/data.csv"));
+
+        //fluidas | Fluent API
+        var resultado = recaudacion.filtrarPor(Recaudacion.ROUND, "a")
+                .filtrarPor(Recaudacion.COMPANY_NAME, "Facebook")
+                .ejecutarQuery();
+
+        assertEquals(resultado.size(), 1);
+        //assertEquals(recaudacion.where(options).size(), 1);
     }
 
     @Test
