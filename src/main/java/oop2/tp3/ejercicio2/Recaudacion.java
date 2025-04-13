@@ -1,8 +1,5 @@
 package oop2.tp3.ejercicio2;
 
-import com.opencsv.CSVReader;
-
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +23,7 @@ public class Recaudacion {
     public static final int INDICE_STATE = 5;
     public static final int INDICE_ROUND = 9;
     private List<String[]> csvData;
+    private Map<String, String> options;
 
     public Recaudacion(FuenteDeDatos fuenteDeDatos) {
         this.csvData = fuenteDeDatos.toList();
@@ -34,11 +32,13 @@ public class Recaudacion {
 
     public List<Map<String, String>> where(Map<String, String> options)
             throws IOException {
+        //MEthod Object
+        this.options = options;
 
-        filtrarPor(options, COMPANY_NAME, INDICE_COMPANY_NAME);
-        filtrarPor(options, CITY, INDICE_CITY);
-        filtrarPor(options, STATE, INDICE_STATE);
-        filtrarPor(options, ROUND, INDICE_ROUND);
+        filtrarPor(COMPANY_NAME, INDICE_COMPANY_NAME);
+        filtrarPor(CITY, INDICE_CITY);
+        filtrarPor(STATE, INDICE_STATE);
+        filtrarPor(ROUND, INDICE_ROUND);
 
         return crearResultado();
     }
@@ -63,7 +63,7 @@ public class Recaudacion {
         return output;
     }
 
-    private void filtrarPor(Map<String, String> options, String nombreColumna, int indiceColumna) {
+    private void filtrarPor(String nombreColumna, int indiceColumna) {
         if (options.containsKey(nombreColumna)) {
             List<String[]> results = csvData.stream()
                     .filter(csvDatum -> csvDatum[indiceColumna].equals(options.get(nombreColumna)))
