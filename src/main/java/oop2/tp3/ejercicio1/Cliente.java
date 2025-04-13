@@ -17,26 +17,9 @@ public class Cliente {
         int puntosAlquilerFrecuente = 0;
         for (Alquiler alquiler : alquileres) {
             double monto = 0;
-// determine amounts for each line
-            switch (alquiler.copia().libro().codigoPrecio()) {
-                case Libro.REGULARES:
-                    monto = new LibroRegular().calcularMonto(alquiler, monto);
-                    break;
-                case Libro.NUEVO_LANZAMIENTO:
-                    monto = new LibroNuevoLanzamiento().calcularMonto(alquiler, monto);
-                    break;
-                case Libro.INFANTILES:
-                    monto = new LibroInfantil().calcularMonto(alquiler, monto);
-                    break;
-            }
-            total += monto;
-            // sumo puntos por alquiler
+            total += alquiler.calcularMonto(monto);
             puntosAlquilerFrecuente++;
-            // bonus por dos días de alquiler de un nuevo lanzamiento
-            if ((alquiler.copia().libro().codigoPrecio() == Libro.NUEVO_LANZAMIENTO)
-                    && alquiler.diasAlquilados() > 1) {
-                puntosAlquilerFrecuente++;
-            }
+            puntosAlquilerFrecuente += alquiler.sumaPuntosFrecuente();
         }
         resultado[0] = total;
         resultado[1] = puntosAlquilerFrecuente;

@@ -1,10 +1,14 @@
 package oop2.tp3.ejercicio1;
 
-public class LibroInfantil {
-    double calcularMonto(Alquiler alquiler, double monto) {
+public class LibroInfantil extends Libro{
+    public LibroInfantil(String nombre, int priceCode){
+        super(nombre, priceCode);
+    }
+
+    double calcularMonto(int diasAlquilados, double monto) {
         monto += 1.5;
-        if (alquiler.diasAlquilados() > 3)
-            monto += (alquiler.diasAlquilados() - 3) * 1.5;
+        if (diasAlquilados > 3)
+            monto += (diasAlquilados - 3) * 1.5;
         return monto;
     }
 }
