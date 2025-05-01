@@ -19,9 +19,7 @@ public class Main {
             }
         }
 
-        var persona = repo.buscarId(1L);
-        if (persona != null) {
-            System.out.println(persona.nombre() + " " + persona.apellido());
-        }
+        var optionalPersona = repo.buscarId(1L);
+        optionalPersona.ifPresent(persona -> System.out.println(persona.nombre() + " " + persona.apellido()));
     }
 }
